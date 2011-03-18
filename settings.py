@@ -1,9 +1,3 @@
-try:
-    from local_settings import *
-except ImportError:
-    pass
-
-
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 MANAGERS = ADMINS
@@ -37,3 +31,10 @@ INSTALLED_APPS = (
 
 import subprocess as sp
 GIT_SHA = sp.Popen(['git', '--git-dir', BASE_DIR+'/.git', 'rev-parse', 'HEAD'], stdout=sp.PIPE).communicate()[0].strip()
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
+
+
