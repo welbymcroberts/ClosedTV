@@ -1,6 +1,5 @@
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-MANAGERS = ADMINS
 TIME_ZONE = 'Europe/London'
 LANGUAGE_CODE = 'en-GB'
 SITE_ID = 1
@@ -29,12 +28,15 @@ INSTALLED_APPS = (
     'ClosedTV.main'
 )
 
-import subprocess as sp
-GIT_SHA = sp.Popen(['git', '--git-dir', BASE_DIR+'/.git', 'rev-parse', 'HEAD'], stdout=sp.PIPE).communicate()[0].strip()
-
 try:
     from local_settings import *
 except ImportError:
     pass
+
+
+
+
+import subprocess as sp
+GIT_SHA = sp.Popen(['git', '--git-dir', BASE_DIR+'/.git', 'rev-parse', 'HEAD'], stdout=sp.PIPE).communicate()[0].strip()
 
 

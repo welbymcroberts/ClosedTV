@@ -1,13 +1,13 @@
 # Create your views here.
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from copy import copy
 import itertools
 import xml.etree.cElementTree as et
 from pprint import pprint as pp
 from main.models import *
 from django.conf import settings 
-
+from django.db.models import Q
 
 if settings.BASE_DIR:
     BASE_DIR = settings.BASE_DIR
@@ -21,21 +21,25 @@ def regions(request,area):
     r = area.region_set.values()
     return render_to_response('regions.html',{'r': r})
 def channels(request,region):
-    region = get_object_or_404(Region,pk=region)
-    c = region.channel_set.values()
+    area = get_object_or_404(Area,Q(region=region))
+    r6 = get_object_or_404(Region,Q(area=area) & Q(regionid=65535))
+    regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
+    c = []
+    for region in regions:
+        c += region.channel_set.values()
     return render_to_response('channels.html',{'c': c, 'r': region})
 def generate(request):
     region = request.REQUEST['region']
     sourceid = request.REQUEST['sourceid']
     sourcename = request.REQUEST['sourcename']
     headendid = '{'+request.REQUEST['headendid']+'}'
-    r = get_object_or_404(Region,pk=region)
-    for reg in r.area.region_set.values():
-        if reg['regionid'] == 65535:
-            r6 = reg
-    c = itertools.chain(r.channel_set.values(),get_object_or_404(Region,pk=r6['id']).channel_set.values())
-    c2 = itertools.chain(r.channel_set.values(),get_object_or_404(Region,pk=r6['id']).channel_set.values())
-    res = render_to_response('dvb.html',{'c': c, 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid, 'c2': c2 }, mimetype='application/xml')
+    area = get_object_or_404(Area,Q(region=region))
+    r6 = get_object_or_404(Region,Q(area=area) & Q(regionid=65535))
+    regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
+    c = []
+    for region in regions:
+        c += get_list_or_404(Channel,region=region)
+    res = render_to_response('dvb.html',{'c': c, 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid, }, mimetype='application/xml')
     #res['Content-Disposition'] = "attachment; filename=DVBChannelSync.xml";
     return res
 def update_xml(request):

@@ -21,4 +21,4 @@ pip-log.txt
 *.pot
 local_settings.py
 
-xml/
+xml/*
