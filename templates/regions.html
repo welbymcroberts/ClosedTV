@@ -1,0 +1,4 @@
+<h1> We know of the following regions for this area</h1>
+{% for reg in r %}
+    <li><a href="/newEPG/channels/{{ reg.id}}/">{{ reg.regionid }}</a></li>
+{% endfor %}

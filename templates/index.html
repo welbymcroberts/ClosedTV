@@ -1,0 +1,4 @@
+<h1> We know of the following areas and regions</h1>
+{% for area in areas %}
+    <li><a href="/newEPG/regions/{{ area.id}}/">{{ area.name }} - {{ area.id }}</a></li>
+{% endfor %}
