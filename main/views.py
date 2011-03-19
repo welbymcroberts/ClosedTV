@@ -20,6 +20,7 @@ def regions(request,area):
     area = get_object_or_404(Area,pk=area)
     r = area.region_set.values()
     return render_to_response('regions.html',{'r': r})
+
 def channels(request,region):
     area = get_object_or_404(Area,Q(region=region))
     r6 = get_object_or_404(Region,Q(area=area) & Q(regionid=65535))
@@ -28,6 +29,7 @@ def channels(request,region):
     for region in regions:
         c += region.channel_set.values()
     return render_to_response('channels.html',{'c': c, 'r': region})
+
 def generate(request):
     region = request.REQUEST['region']
     sourceid = request.REQUEST['sourceid']
@@ -42,7 +44,12 @@ def generate(request):
     res = render_to_response('dvb.html',{'c': c, 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid, }, mimetype='application/xml')
     #res['Content-Disposition'] = "attachment; filename=DVBChannelSync.xml";
     return res
+
 def update_xml(request):
+            Area.objects.all().delete()
+            Region.objects.all().delete()
+            Channel.objects.all().delete()
+            ScannedChannel.objects.all().delete()
             areaxml = et.parse(BASE_DIR+'xml/AreaRegionChannelInfo.xml').getroot()
             for area in areaxml.findall('area'):
                # Create the areas
