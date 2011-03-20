@@ -13,9 +13,21 @@ if settings.BASE_DIR:
     BASE_DIR = settings.BASE_DIR
 
 
+def tv_or_radio(ch_list):
+    c = []
+    for ch in ch_list:
+        if ch['number'] > 100 and ch['number'] < 1000:
+            #These are TV Channels
+            c +=[ch]
+        if ch['number'] > 3000 and ch['number'] < 4000:
+            #These are Radio Channels
+            c += [ch]
+    return c
+
 def index(request):
     areas = Area.objects.all()
     return render_to_response('index.html',{'areas': areas})
+
 def regions(request,area):
     area = get_object_or_404(Area,pk=area)
     r = area.region_set.values()
@@ -27,7 +39,8 @@ def channels(request,region):
     regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
     c = []
     for region in regions:
-        c += region.channel_set.values()
+        print region.regionid
+        c += tv_or_radio(region.channel_set.values())
     return render_to_response('channels.html',{'c': c, 'r': region})
 
 def generate(request):
@@ -40,7 +53,9 @@ def generate(request):
     regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
     c = []
     for region in regions:
-        c += get_list_or_404(Channel,region=region)
+        #c = get_list_or_404(Channel,region=region)
+        c += tv_or_radio(region.channel_set.values())
+        #tv_or_radio(get_list_or_404(Channel,region=region))
     res = render_to_response('dvb.html',{'c': c, 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid, }, mimetype='application/xml')
     #res['Content-Disposition'] = "attachment; filename=DVBChannelSync.xml";
     return res
@@ -50,18 +65,9 @@ def update_xml(request):
             Region.objects.all().delete()
             Channel.objects.all().delete()
             ScannedChannel.objects.all().delete()
-            areaxml = et.parse(BASE_DIR+'xml/AreaRegionChannelInfo.xml').getroot()
-            for area in areaxml.findall('area'):
-               # Create the areas
-               print('new area')
-               a = Area(id=area.attrib['id'],name=area.attrib['name'])
-               a.save()
-               for region in area.findall('region'):
-                  r = Region(area=a,regionid=region.attrib['id'])
-                  r.save()
-                  for channel in region.findall('channel'):
-                      c = Channel(region=r,number=channel.attrib['id'],nid=channel.attrib['nid'],tid=channel.attrib['tid'],sid=channel.attrib['sid'],name=channel.attrib['name'])
-                      c.save()
+
+
+
             tvsourcexml = et.parse(BASE_DIR+'xml/TVSourceSettings.xml').getroot()
             for Channels in tvsourcexml.findall('Channels'):
                 for Headend in Channels.findall('Headend'):
@@ -90,11 +96,21 @@ def update_xml(request):
                             name = c.find('Name').text,
                             provider = c.find('Provider').text,
                            )
-                           pp(sc)
                            sc.save()
 
-    
-
-
-
+            areaxml = et.parse(BASE_DIR+'xml/AreaRegionChannelInfo.xml').getroot()
+            for area in areaxml.findall('area'):
+               # Create the areas
+               a = Area(id=area.attrib['id'],name=area.attrib['name'])
+               a.save()
+               for region in area.findall('region'):
+                  r = Region(area=a,regionid=region.attrib['id'])
+                  r.save()
+                  for channel in region.findall('channel'):
+                      try:
+                          realfrequency = ScannedChannel.objects.get(tid=channel.attrib['tid'],nid=channel.attrib['nid'],sid=channel.attrib['sid']).freq
+                          c = Channel(region=r,number=channel.attrib['id'],nid=channel.attrib['nid'],tid=channel.attrib['tid'],sid=channel.attrib['sid'],name=channel.attrib['name'], realfreq=realfrequency)
+                          c.save()
+                      except:
+                          print "No Scanned Channel for " + channel.attrib['name'] + '  ' + channel.attrib['tid'] + ':' + channel.attrib['sid']
             return HttpResponseRedirect('/done')

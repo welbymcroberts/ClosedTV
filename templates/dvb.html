@@ -9,20 +9,17 @@
     <subnumber>0</subnumber>
     <name>{{channel.name}}</name>
     <category/>
-              FAKE FREQ forloop.counter0
-    <frequency>{{ forloop.counter }}</frequency>
+    <frequency>{{ forloop.counter|add:"1011200" }}</frequency>
     <physical_channel>
       <number>-1</number>
       <subnumber>0</subnumber>
       <type>TV</type>
-                        REAL FREQUENCY
-      <id>{{headendid}}:10803000:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</id>
+      <id>{{headendid}}:{{channel.realfreq}}:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</id>
       <source_id>{{sourceid}}</source_id>
       <source_name>{{sourcename}}</source_name>
       <name>{{channel.name}}</name>
       <category>\Eurobird 1   Astra 2A,2B,2D (28.2)\TV\By Name\</category>
-                     REAL FREQUENCY
-      <altid>0282.ini:10803:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</altid>
+      <altid>0282.ini:{{channel.realfreq}}:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</altid>
       <fta>1</fta>
     </physical_channel>
   </logical_channel>
@@ -31,7 +28,7 @@
   <epg_map> 
   {% for channel in c %}
     <channel>
-      <channel_frequency>10112{{ forloop.counter }}</channel_frequency>
+      <channel_frequency>{{ forloop.counter|add:"1011200" }}</channel_frequency>
       <source>{{sourceid}}</source>
       <epg_channel>dvblogiccppplugin:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</epg_channel>
       <name>{{sourcename}}</name>
