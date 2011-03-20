@@ -1,5 +1,5 @@
 # Create your views here.
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from copy import copy
 import itertools
@@ -38,9 +38,9 @@ def channels(request,region):
     r6 = get_object_or_404(Region,Q(area=area) & Q(regionid=65535))
     regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
     c = []
-    for region in regions:
-        c += tv_or_radio(region.channel_set.values())
-    return render_to_response('channels.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'r': region})
+    for reg in regions:
+        c += tv_or_radio(reg.channel_set.values())
+    return render_to_response('channels.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'r': Region.objects.get(pk=region)})
 
 def generate(request):
     region = request.REQUEST['region']
@@ -52,11 +52,9 @@ def generate(request):
     regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
     c = []
     for region in regions:
-        #c = get_list_or_404(Channel,region=region)
         c += tv_or_radio(region.channel_set.values())
-        #tv_or_radio(get_list_or_404(Channel,region=region))
     res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid, }, mimetype='application/xml')
-    #res['Content-Disposition'] = "attachment; filename=DVBChannelSync.xml";
+    res['Content-Disposition'] = "attachment; filename=DVBChannelSync.xml";
     return res
 
 def update_xml(request):
@@ -98,6 +96,7 @@ def update_xml(request):
                            sc.save()
 
             areaxml = et.parse(BASE_DIR+'xml/AreaRegionChannelInfo.xml').getroot()
+            ret = ''
             for area in areaxml.findall('area'):
                # Create the areas
                a = Area(id=area.attrib['id'],name=area.attrib['name'])
@@ -111,5 +110,5 @@ def update_xml(request):
                           c = Channel(region=r,number=channel.attrib['id'],nid=channel.attrib['nid'],tid=channel.attrib['tid'],sid=channel.attrib['sid'],name=channel.attrib['name'], realfreq=realfrequency)
                           c.save()
                       except:
-                          print "No Scanned Channel for " + channel.attrib['name'] + '  ' + channel.attrib['tid'] + ':' + channel.attrib['sid']
-            return HttpResponseRedirect('/done')
+                          ret +=  "<br />No Scanned Channel for " + channel.attrib['name'] + '  ' + channel.attrib['tid'] + ":" + channel.attrib['sid'] + " in area " + area.attrib['name'] 
+            return HttpResponse(ret+'<br /><a href="/">Home</a>')
