@@ -18,7 +18,7 @@ def tv_or_radio(ch_list):
     for ch in ch_list:
         if ch['number'] > 100 and ch['number'] < 1000:
             #These are TV Channels
-            c +=[ch]
+            c +=  [ch]
         if ch['number'] > 3000 and ch['number'] < 4000:
             #These are Radio Channels
             c += [ch]
@@ -39,9 +39,8 @@ def channels(request,region):
     regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
     c = []
     for region in regions:
-        print region.regionid
         c += tv_or_radio(region.channel_set.values())
-    return render_to_response('channels.html',{'c': c, 'r': region})
+    return render_to_response('channels.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'r': region})
 
 def generate(request):
     region = request.REQUEST['region']
@@ -56,7 +55,7 @@ def generate(request):
         #c = get_list_or_404(Channel,region=region)
         c += tv_or_radio(region.channel_set.values())
         #tv_or_radio(get_list_or_404(Channel,region=region))
-    res = render_to_response('dvb.html',{'c': c, 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid, }, mimetype='application/xml')
+    res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid, }, mimetype='application/xml')
     #res['Content-Disposition'] = "attachment; filename=DVBChannelSync.xml";
     return res
 
