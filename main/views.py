@@ -64,7 +64,7 @@ def update_xml(request):
             ScannedChannel.objects.all().delete()
 
 
-
+            scanned = {}
             tvsourcexml = et.parse(BASE_DIR+'xml/TVSourceSettings.xml').getroot()
             for Channels in tvsourcexml.findall('Channels'):
                 for Headend in Channels.findall('Headend'):
@@ -94,11 +94,10 @@ def update_xml(request):
                             provider = c.find('Provider').text,
                            )
                            sc.save()
-
+                           scanned[sc.nid+':'+sc.tid+':'+sc.sid] = sc 
             areaxml = et.parse(BASE_DIR+'xml/AreaRegionChannelInfo.xml').getroot()
             ret = ''
             for area in areaxml.findall('area'):
-               # Create the areas
                a = Area(id=area.attrib['id'],name=area.attrib['name'])
                a.save()
                for region in area.findall('region'):
@@ -106,7 +105,7 @@ def update_xml(request):
                   r.save()
                   for channel in region.findall('channel'):
                       try:
-                          realfrequency = ScannedChannel.objects.get(tid=channel.attrib['tid'],nid=channel.attrib['nid'],sid=channel.attrib['sid']).freq
+                          realfrequency = scanned[channel.attrib['nid']+':'+channel.attrib['tid']+':'+channel.attrib['sid']].freq
                           c = Channel(region=r,number=channel.attrib['id'],nid=channel.attrib['nid'],tid=channel.attrib['tid'],sid=channel.attrib['sid'],name=channel.attrib['name'], realfreq=realfrequency)
                           c.save()
                       except:
