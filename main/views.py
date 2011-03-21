@@ -59,7 +59,7 @@ def generate(request):
     for region in regions:
         c += tv_or_radio(region.channel_set.filter(fta).values())
     res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid }, mimetype='application/xml')
-    res['Content-Disposition'] = "attachment; filename=DVBChannelSync.xml";
+    res['Content-Disposition'] = "attachment; filename=DVBLinkChannelStorage.xml";
     return res
 
 def update_xml(request):
