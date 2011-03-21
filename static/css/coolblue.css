@@ -131,7 +131,7 @@ td {
 }
 
 /* form elements */
-form {
+form.bg {
 	margin: 10px 25px 10px 25px;
 	padding: 10px 25px 25px 25px;
     background: #F3F4F5;
