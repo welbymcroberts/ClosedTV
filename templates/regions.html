@@ -1,4 +1,8 @@
-<h1> We know of the following regions for this area</h1>
+{% extends "base.html" %}
+{%block title%}ClosedTV{%endblock%}
+{%block h2%}Select your region{%endblock%}
+{% block content %}
 {% for reg in r %}
-    <li><a href="/newEPG/channels/{{ reg.id}}/">{{ reg.regionid }}</a></li>
+    <li><a href="/channels/{{ reg.id}}/">{{ reg.regionid }}</a></li>
 {% endfor %}
+{% endblock %}

@@ -1,4 +1,8 @@
-<h1> We know of the following areas and regions</h1>
+{% extends "base.html" %}
+{%block title%}ClosedTV{%endblock%}
+{%block h2%}Select your Area{%endblock%}
+{% block content %}
 {% for area in areas %}
-    <li><a href="/newEPG/regions/{{ area.id}}/">{{ area.name }} - {{ area.id }}</a></li>
+    <li><a href="/regions/{{ area.id}}/">{{ area.name }} - {{ area.id }}</a></li>
 {% endfor %}
+{% endblock %}

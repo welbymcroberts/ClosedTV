@@ -1,15 +1,18 @@
-<h1> We know of the following channels for this region</h1>
+{% extends "base.html" %}
+{%block title%}ClosedTV{%endblock%}
+{%block h2%}Channels for this region{%endblock%}
+{% block content %}
 {% for ch in c %}
     <li>{{ch.number}} - {{ ch.name }}</li>
 {% endfor %}
-
-
-<h2>Generate me a DVBLinkChannelSource for this region! (and the 65535 of this region)</h2>
-<form action="/newEPG/generate/" method="POST">
+</p></div></div>
+<div class="post><div class="right"><h2>Generate DVBLink Config</h2><p>
+<form action="/generate/" method="POST">
 <input type="hidden" name="region" value="{{r.id}}" />
 Source ID:<input type="text" name="sourceid" value="abc123" /><br />
 Source Name:<input type="text" name="sourcename" value="DVB-S2 (Freesat)" /><br />
 Headend IF:<input type="text" name="headendid" value="ASDFSDAF" /><br />
 <input type="submit" value="Go!" />
 
-</form>
+{% endblock %}
+
