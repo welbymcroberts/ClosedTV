@@ -46,14 +46,19 @@ def generate(request):
     region = request.REQUEST['region']
     sourceid = request.REQUEST['sourceid']
     sourcename = request.REQUEST['sourcename']
+    if request.REQUEST['fta'] == 'fta':
+        fta = (Q(fta=0))
+    else:
+        fta = (Q(fta=0) | Q(fta=1))
+
     headendid = '{'+request.REQUEST['headendid']+'}'
     area = get_object_or_404(Area,Q(region=region))
     r6 = get_object_or_404(Region,Q(area=area) & Q(regionid=65535))
     regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
     c = []
     for region in regions:
-        c += tv_or_radio(region.channel_set.values())
-    res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid, }, mimetype='application/xml')
+        c += tv_or_radio(region.channel_set.filter(fta).values())
+    res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid }, mimetype='application/xml')
     res['Content-Disposition'] = "attachment; filename=DVBChannelSync.xml";
     return res
 
@@ -106,7 +111,8 @@ def update_xml(request):
                   for channel in region.findall('channel'):
                       try:
                           realfrequency = scanned[channel.attrib['nid']+':'+channel.attrib['tid']+':'+channel.attrib['sid']].freq
-                          c = Channel(region=r,number=channel.attrib['id'],nid=channel.attrib['nid'],tid=channel.attrib['tid'],sid=channel.attrib['sid'],name=channel.attrib['name'], realfreq=realfrequency)
+                          encrypt = scanned[channel.attrib['nid']+':'+channel.attrib['tid']+':'+channel.attrib['sid']].encrypt
+                          c = Channel(region=r,number=channel.attrib['id'],nid=channel.attrib['nid'],tid=channel.attrib['tid'],sid=channel.attrib['sid'],name=channel.attrib['name'], realfreq=realfrequency, fta=encrypt)
                           c.save()
                       except:
                           ret +=  "<br />No Scanned Channel for " + channel.attrib['name'] + '  ' + channel.attrib['tid'] + ":" + channel.attrib['sid'] + " in area " + area.attrib['name'] 

@@ -43,4 +43,5 @@ class Channel(models.Model):
     sid = models.IntegerField()
     name = models.CharField(max_length=50)
     realfreq = models.IntegerField()
+    fta = models.IntegerField()
 

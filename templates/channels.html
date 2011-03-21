@@ -11,7 +11,11 @@
 <input type="hidden" name="region" value="{{r.id}}" />
 Source ID:<input type="text" name="sourceid" value="abc123" /><br />
 Source Name:<input type="text" name="sourcename" value="DVB-S2 (Freesat)" /><br />
-Headend IF:<input type="text" name="headendid" value="ASDFSDAF" /><br />
+Headend ID:<input type="text" name="headendid" value="ASDFSDAF" /><br />
+<br />
+<input type="radio" name="fta" value="fta" checked/>FTA Channels</input>
+<input type="radio" name="fta" value="all" checked/>All Channels</input>
+
 <input type="submit" value="Go!" />
 
 {% endblock %}
