@@ -42,7 +42,7 @@ def channels(request,region):
         c += tv_or_radio(reg.channel_set.values())
     return render_to_response('channels.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'r': Region.objects.get(pk=region)})
 
-def generate(request):
+def generate_list(request):
     region = request.REQUEST['region']
     sourceid = request.REQUEST['sourceid']
     sourcename = request.REQUEST['sourcename']
@@ -58,6 +58,16 @@ def generate(request):
     c = []
     for region in regions:
         c += tv_or_radio(region.channel_set.filter(fta).values())
+    return (c,sourceid,sourcename,headendid)
+
+def generate_channelsconf(request):
+    (c,sourceid,sourcename,headendid) = generate_list(request)
+    res = render_to_response('channels.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid }, mimetype='application/xml')
+    res['Content-Disposition'] = "attachment; filename=DVBLinkChannelStorage.xml";
+    return res
+
+def generate(request):
+    (c,sourceid,sourcename,headendid) = generate_list(request)
     res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid }, mimetype='application/xml')
     res['Content-Disposition'] = "attachment; filename=DVBLinkChannelStorage.xml";
     return res
