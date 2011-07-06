@@ -22,11 +22,13 @@ MIDDLEWARE_CLASSES = (
     'ClosedTV.middleware.TimerMiddleware',
     'ClosedTV.middleware.GitMiddleware',
 )
+
+INTERNAL_IPS = ('94.236.7.190',)
 ROOT_URLCONF = 'ClosedTV.urls'
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.messages',
-    'ClosedTV.main'
+    'ClosedTV.main',
 )
 
 try:

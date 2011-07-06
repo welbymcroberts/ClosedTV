@@ -9,4 +9,8 @@ urlpatterns = patterns('',
     (r'^newEPG/channels/(?P<region>\d+)/$',  'main.views.channels'),
     (r'^/$',  'main.views.index'),
     (r'^$',  'main.views.index'),
+    (r'^index.htm$',  'main.views.index'),
+    (r'^/index.htm$',  'main.views.index'),
+    (r'^django_home$',  'main.views.index'),
+    (r'^/django_home$',  'main.views.index'),
 )

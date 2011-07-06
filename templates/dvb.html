@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8" ?> 
+{% load dvb %}<?xml version="1.0" encoding="utf-8" ?> 
 <channel_info> 
-  <channel_map>
-  {% for channel in c %}
+  <channel_map> {% for channel in c %}
   <logical_channel>
     <childlock>0</childlock>
     <type>TV</type>
@@ -9,7 +8,7 @@
     <subnumber>0</subnumber>
     <name>{{channel.name}}</name>
     <category/>
-    <frequency>{{ forloop.counter|add:"1011200" }}</frequency>
+    <frequency>{{ forloop.counter|add:"10094000" }}</frequency>
     <physical_channel>
       <number>-1</number>
       <subnumber>0</subnumber>
@@ -19,21 +18,18 @@
       <source_name>{{sourcename}}</source_name>
       <name>{{channel.name}}</name>
       <category>\Eurobird 1   Astra 2A,2B,2D (28.2)\TV\By Name\</category>
-      <altid>0282.ini:{{channel.realfreq}}:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</altid>
+      <altid>0282.ini:{{channel.realfreq|tchar:"5"}}:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</altid>
       <fta>1</fta>
     </physical_channel>
-  </logical_channel>
-  {% endfor %}
+  </logical_channel>{% endfor %}
   </channel_map> 
-  <epg_map> 
-  {% for channel in c %}
+  <epg_map>{% for channel in c %} 
     <channel>
       <channel_frequency>{{ forloop.counter|add:"1011200" }}</channel_frequency>
       <source>{{sourceid}}</source>
       <epg_channel>dvblogiccppplugin:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</epg_channel>
       <name>{{sourcename}}</name>
-    </channel>
-    {% endfor %}
+    </channel>{% endfor %}
   </epg_map> 
   <record_configuration> 
   </record_configuration> 
