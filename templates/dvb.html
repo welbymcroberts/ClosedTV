@@ -8,24 +8,24 @@
     <subnumber>0</subnumber>
     <name>{{channel.name}}</name>
     <category/>
-    <frequency>{{ forloop.counter|add:"10094000" }}</frequency>
-    <physical_channel>
+    <frequency>{{ forloop.counter|add:"1000" }}0000</frequency>
+    {% for tuner in tuners %}<physical_channel>
       <number>-1</number>
       <subnumber>0</subnumber>
       <type>TV</type>
-      <id>{{headendid}}:{{channel.realfreq}}:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</id>
-      <source_id>{{sourceid}}</source_id>
-      <source_name>{{sourcename}}</source_name>
+      <id>{{tuner.headendid}}:{{channel.realfreq}}:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</id>
+      <source_id>{{tuner.sourceid}}</source_id>
+      <source_name>{{tuner.sourcename}}</source_name>
       <name>{{channel.name}}</name>
       <category>\Eurobird 1   Astra 2A,2B,2D (28.2)\TV\By Name\</category>
       <altid>0282.ini:{{channel.realfreq|tchar:"5"}}:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</altid>
       <fta>1</fta>
-    </physical_channel>
+    </physical_channel>{% endfor %}
   </logical_channel>{% endfor %}
   </channel_map> 
   <epg_map>{% for channel in c %} 
     <channel>
-      <channel_frequency>{{ forloop.counter|add:"1011200" }}</channel_frequency>
+      <channel_frequency>{{ forloop.counter|add:"1000" }}0000</channel_frequency>
       <source>{{sourceid}}</source>
       <epg_channel>dvblogiccppplugin:{{channel.nid}}:{{channel.tid}}:{{channel.sid}}</epg_channel>
       <name>{{sourcename}}</name>

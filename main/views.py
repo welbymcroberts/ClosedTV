@@ -13,7 +13,7 @@ if settings.BASE_DIR:
     BASE_DIR = settings.BASE_DIR
 
 
-def tv_or_radio(ch_list):
+def tv_or_radio(ch_list,radio=False):
     c = []
     for ch in ch_list:
         if ch['number'] > 100 and ch['number'] < 1000:
@@ -21,7 +21,8 @@ def tv_or_radio(ch_list):
             c +=  [ch]
         if ch['number'] > 3000 and ch['number'] < 4000:
             #These are Radio Channels
-            c += [ch]
+            if radio:
+                c += [ch]
     return c
 
 def index(request):
@@ -42,33 +43,71 @@ def channels(request,region):
         c += tv_or_radio(reg.channel_set.values())
     return render_to_response('channels.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'r': Region.objects.get(pk=region)})
 
-def generate_list(request):
-    region = request.REQUEST['region']
-    sourceid = request.REQUEST['sourceid']
-    sourcename = request.REQUEST['sourcename']
+def generate_list(request,region,radio):
     if request.REQUEST['fta'] == 'fta':
         fta = (Q(fta=0))
     else:
         fta = (Q(fta=0) | Q(fta=1))
-
-    headendid = '{'+request.REQUEST['headendid']+'}'
     area = get_object_or_404(Area,Q(region=region))
     r6 = get_object_or_404(Region,Q(area=area) & Q(regionid=65535))
     regions = get_list_or_404(Region,Q(pk=region) | Q(pk=r6.pk))
     c = []
     for region in regions:
-        c += tv_or_radio(region.channel_set.filter(fta).values())
-    return (c,sourceid,sourcename,headendid)
-
-def generate_channelsconf(request):
-    (c,sourceid,sourcename,headendid) = generate_list(request)
-    res = render_to_response('channels.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid }, mimetype='application/xml')
-    res['Content-Disposition'] = "attachment; filename=DVBLinkChannelStorage.xml";
-    return res
-
+        c += tv_or_radio(region.channel_set.filter(fta).values(),radio)
+    return c
+def headend(h,version=3):
+    print version
+    if version == "4":
+        headendid = h
+    else:
+        headendid = '{'+h+'}'
+    return headendid
+def get_parms(request,number=1,version=3):
+    sourceid = request.REQUEST['sourceid'+str(number)]
+    sourcename = request.REQUEST['sourcename'+str(number)]
+    headendid = headend(request.REQUEST['headendid'+str(number)],version)
+    print headendid
+    return (sourceid,sourcename,headendid)
 def generate(request):
-    (c,sourceid,sourcename,headendid) = generate_list(request)
-    res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid, 'sourcename': sourcename, 'headendid': headendid }, mimetype='application/xml')
+    region = request.REQUEST['region']
+    no_tuners = int(request.REQUEST['tuners'])
+    version = request.REQUEST['version']
+    sourceid={}
+    sourcename={}
+    headendid={}
+    tuners = []
+    if request.REQUEST['radio'] == 1:
+        radio = True
+    else:
+        radio = False
+    if no_tuners > 0:
+        (sourceid[1],sourcename[1],headendid[1]) = get_parms(request,1,version)
+	tuners.append({'sourceid':sourceid[1],'sourcename':sourcename[1],'headendid':headendid[1]})
+    if no_tuners > 1:
+        (sourceid[2],sourcename[2],headendid[2]) = get_parms(request,2,version)
+	tuners.append({'sourceid':sourceid[2],'sourcename':sourcename[2],'headendid':headendid[2]})
+    if no_tuners > 2:
+        (sourceid[3],sourcename[3],headendid[3]) = get_parms(request,3,version)
+	tuners.append({'sourceid':sourceid[3],'sourcename':sourcename[3],'headendid':headendid[3]})
+    if no_tuners > 3:
+        (sourceid[4],sourcename[4],headendid[4]) = get_parms(request,4,version)
+	tuners.append({'sourceid':sourceid[4],'sourcename':sourcename[4],'headendid':headendid[4]})
+    if no_tuners > 4:
+        (sourceid[5],sourcename[5],headendid[5]) = get_parms(request,5,version)
+        tuners.append({'sourceid':sourceid[5],'sourcename':sourcename[5],'headendid':headendid[5]})
+    if no_tuners > 5:
+        (sourceid[6],sourcename[6],headendid[6]) = get_parms(request,6,version)
+        tuners.append({'sourceid':sourceid[6],'sourcename':sourcename[6],'headendid':headendid[6]})
+    if no_tuners > 6:
+        (sourceid[7],sourcename[7],headendid[7]) = get_parms(request,7,version)
+        tuners.append({'sourceid':sourceid[7],'sourcename':sourcename[7],'headendid':headendid[7]})
+    if no_tuners > 7:
+        (sourceid[8],sourcename[8],headendid[8]) = get_parms(request,8,version)
+        tuners.append({'sourceid':sourceid[8],'sourcename':sourcename[8],'headendid':headendid[8]})
+    c = generate_list(request,region,radio)
+    from pprint import pprint as pp
+    tuner1 = { 'sourceid': sourceid[1], 'sourcename': sourcename[1], 'headendid': headendid[1] }
+    res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid[1], 'sourcename': sourcename[1], 'headendid': headendid[1], 'tuners': tuners } , mimetype='application/xml')
     res['Content-Disposition'] = "attachment; filename=DVBLinkChannelStorage.xml";
     return res
 

@@ -9,12 +9,72 @@
 <div class="post><div class="right"><h2>Generate DVBLink Config</h2><p>
 <form action="/generate/" method="POST" class="bg">
 <input type="hidden" name="region" value="{{r.id}}" />
-Source ID:<input type="text" name="sourceid" value="abc123" /><br />
-Source Name:<input type="text" name="sourcename" value="DVB-S2 (Freesat)" /><br />
-Headend ID:<input type="text" name="headendid" value="ASDFSDAF" /><br />
+Tuner 1<br />
+Source Name:<input type="text" name="sourcename1" value="DVB-S2 (Freesat)" /><br />
+Headend ID:<input type="text" name="headendid1" value="ASDFSDAF" /><br />
+Source ID:<input type="text" name="sourceid1" value="abc123" /><br />
+
+
+
+Tuner 2<br />
+Source Name:<input type="text" name="sourcename2" value="DVB-S2 (Freesat)" /><br />
+Headend ID:<input type="text" name="headendid2" value="ASDFSDAF" /><br />
+Source ID:<input type="text" name="sourceid2" value="abc123" /><br />
+
+
+Tuner 3<br />
+Source Name:<input type="text" name="sourcename3" value="DVB-S2 (Freesat)" /><br />
+Headend ID:<input type="text" name="headendid3" value="ASDFSDAF" /><br />
+Source ID:<input type="text" name="sourceid3" value="abc123" /><br />
+
+
+
+Tuner 4<br />
+Source Name:<input type="text" name="sourcename4" value="DVB-S2 (Freesat)" /><br />
+Headend ID:<input type="text" name="headendid4" value="ASDFSDAF" /><br />
+Source ID:<input type="text" name="sourceid4" value="abc123" /><br />
 <br />
+
+
+Tuner 5<br />
+Source Name:<input type="text" name="sourcename5" value="DVB-S2 (Freesat)" /><br />
+Headend ID:<input type="text" name="headendid5" value="ASDFSDAF" /><br />
+Source ID:<input type="text" name="sourceid5" value="abc123" /><br />
+Tuner 6<br />
+Source Name:<input type="text" name="sourcename6" value="DVB-S2 (Freesat)" /><br />
+Headend ID:<input type="text" name="headendid6" value="ASDFSDAF" /><br />
+Source ID:<input type="text" name="sourceid6" value="abc123" /><br />
+Tuner 7<br />
+Source Name:<input type="text" name="sourcename7" value="DVB-S2 (Freesat)" /><br />
+Headend ID:<input type="text" name="headendid7" value="ASDFSDAF" /><br />
+Source ID:<input type="text" name="sourceid7" value="abc123" /><br />
+Tuner 8<br />
+Source Name:<input type="text" name="sourcename8" value="DVB-S2 (Freesat)" /><br />
+Headend ID:<input type="text" name="headendid8" value="ASDFSDAF" /><br />
+Source ID:<input type="text" name="sourceid8" value="abc123" /><br />
+
+Tv Only?
+<input type="radio" name="radio" value="0" checked/>Yes</input>
+<input type="radio" name="radio" value="1" />No, Radio too!</input>
+<br />
+Encrypted?
 <input type="radio" name="fta" value="fta" checked/>FTA Channels</input>
 <input type="radio" name="fta" value="all" checked/>All Channels</input>
+<br />
+Version of DVBLink
+<input type="radio" name="version" value="3" checked/>3</input>
+<input type="radio" name="version" value="4" />4</input>
+<br />
+Number of Tuners
+<input type="radio" name="tuners" value="1" checked />1</input>
+<input type="radio" name="tuners" value="2" />2</input>
+<input type="radio" name="tuners" value="3" />3</input>
+<input type="radio" name="tuners" value="4" />4</input>
+<input type="radio" name="tuners" value="5" />5</input>
+<input type="radio" name="tuners" value="6" />6</input>
+<input type="radio" name="tuners" value="7" />7</input>
+<input type="radio" name="tuners" value="8" />8</input>
+<br />
 
 <input type="submit" value="Go!" />
 

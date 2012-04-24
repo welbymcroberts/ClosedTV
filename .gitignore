@@ -20,5 +20,5 @@ pip-log.txt
 *.log
 *.pot
 local_settings.py
-
+newrelic.ini
 xml/*
