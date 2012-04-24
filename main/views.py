@@ -108,7 +108,10 @@ def generate(request):
     from pprint import pprint as pp
     tuner1 = { 'sourceid': sourceid[1], 'sourcename': sourcename[1], 'headendid': headendid[1] }
     res = render_to_response('dvb.html',{'c': sorted(c, key=lambda epgid: epgid['number'] ), 'sourceid': sourceid[1], 'sourcename': sourcename[1], 'headendid': headendid[1], 'tuners': tuners } , mimetype='application/xml')
-    res['Content-Disposition'] = "attachment; filename=DVBLinkChannelStorage.xml";
+    if version == 4:
+        res['Content-Disposition'] = "attachment; filename=DVBLink_ChannelStorage.xml";
+    else
+        res['Content-Disposition'] = "attachment; filename=DVBLinkChannelStorage.xml";
     return res
 
 def update_xml(request):
