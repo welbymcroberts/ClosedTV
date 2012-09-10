@@ -31,7 +31,7 @@ def index(request):
 
 def regions(request,area):
     area = get_object_or_404(Area,pk=area)
-    r = area.region_set.values()
+    r = area.region_set.extra("SELECT main_channel.name FROM main_channel WHERE main_channel.number = 101 AND main_channel.region_id = main_region.id").extra("SELECT main_channel.name FROM main_channel WHERE main_channel.number = 103 AND main_channel.region_id = main_region.id").values()
     return render_to_response('regions.html',{'r': r})
 
 def channels(request,region):

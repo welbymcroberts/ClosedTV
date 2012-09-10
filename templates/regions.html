@@ -3,6 +3,6 @@
 {%block h2%}Select your region{%endblock%}
 {% block content %}
 {% for reg in r %}
-    <li><a href="/channels/{{ reg.id}}/">{{ reg.regionid }}</a></li>
+    <li><a href="/channels/{{ reg.id}}/">{{ reg.regionid }}</a> ( {{ reg.region101 }} / {{ reg.region103 }} )</li>
 {% endfor %}
 {% endblock %}
